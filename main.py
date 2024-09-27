@@ -1,4 +1,4 @@
-from db import db
+from db import db_methods
 from flask import Flask, g, render_template, request
 
 app = Flask(__name__)
