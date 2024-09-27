@@ -5,9 +5,6 @@ app = Flask(__name__)
 
 @app.route("/", methods=["GET", "POST"])
 def index():
-    cur = db.get_db().cursor()
-    print(cur)
-
     if request.method == 'POST':
         print("Form data submitted to server")
         return 'Form submitted'
