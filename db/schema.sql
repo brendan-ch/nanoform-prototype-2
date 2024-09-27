@@ -14,9 +14,28 @@ CREATE TABLE IF NOT EXISTS question (
 
 CREATE TABLE IF NOT EXISTS choice (
     choice_title VARCHAR(64) NOT NULL,
-    choice_position INTEGER NOT NULL
+
+    -- ID is static regardless of position within question
+    -- But is unique within the associated question only
+    choice_id INTEGER NOT NULL,
+    question_id INTEGER NOT NULL,
+    choice_position INTEGER UNIQUE NOT NULL,
+
+    PRIMARY KEY (choice_id, question_id)
+    FOREIGN KEY (question_id) REFERENCES question(question_id)
+);
+
+CREATE TABLE IF NOT EXISTS response (
+    time_submitted DATE NOT NULL,
     question_id INTEGER NOT NULL,
 
+    selected_choice INTEGER,
+    -- Text associated with "Other" response, and free response text
+    associated_text VARCHAR(128),
+
+    response_id INTEGER PRIMARY KEY AUTOINCREMENT,
+
     FOREIGN KEY (question_id) REFERENCES question(question_id)
+    FOREIGN KEY (selected_choice) REFERENCES choice(choice_id)
 );
 
