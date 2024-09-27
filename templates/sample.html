@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+
+<head>
+    <style>
+        /* Keep CSS and HTML in same file */
+        /* for ease of use during prototyping */
+
+        body {
+            font-family: sans-serif;
+            display: flex;
+            justify-content: center;
+
+            --accent: #ff1f4b;
+            --gray-1: #e5e5e5;
+            --form-control-color: var(--accent);
+        }
+
+        button {
+            /* all: unset; */
+            background-color: var(--gray-1);
+            padding-top: 8px;
+            padding-bottom: 8px;
+            padding-left: 16px;
+            padding-right: 16px;
+            border-radius: 4px;
+            cursor: pointer;
+
+            border: none;
+        }
+
+        .primary-button {
+            background-color: var(--accent);
+            color: white;
+        }
+
+        main {
+            display: flex;
+            flex-direction: column;
+            padding: 16px;
+
+            gap: 16px;
+
+            max-width: 32em;
+        }
+
+        p {
+            /* margin: 0px; */
+            margin-top: 8px;
+            margin-bottom: 8px;
+        }
+
+        input[type="radio"] {
+            -webkit-appearance: none;
+            appearance: none;
+            background-color: #fff;
+            margin: 0;
+
+            font: inherit;
+            color: currentColor;
+            width: 1.15em;
+            height: 1.15em;
+            border: 0.15em solid currentColor;
+            border-radius: 50%;
+
+            display: grid;
+            place-content: center;
+        }
+
+        input[type="radio"]::before {
+            content: "";
+            width: 0.65em;
+            height: 0.65em;
+            border-radius: 50%;
+            transform: scale(0);
+            transition: 120ms transform ease-in-out;
+            box-shadow: inset 1em 1em var(--form-control-color);
+        }
+
+        input[type="radio"]:checked::before {
+            transform: scale(1);
+        }
+
+        textarea {
+            font-family: sans-serif;
+            height: 4em;
+            resize: none;
+        }
+
+        .header-group {
+            display: flex;
+            flex-direction: column;
+            /* background-color: magenta; */
+        }
+
+        .form-questions {
+            display: flex;
+            flex-direction: column;
+            /* background-color: cyan; */
+            gap: 2em;
+        }
+
+        .form-div {
+            /* background-color: purple; */
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-selection-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5em;
+        }
+
+        .form-selection-group > label {
+            background-color: var(--gray-1);
+            height: 2em;
+
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 0.5em;
+
+            padding-left: 0.5em;
+
+            border-radius: 4px;
+        }
+
+        .bottom-button-group {
+            display: flex;
+            justify-content: space-between;
+        }
+    </style>
+</head>
+
+<body>
+    <main>
+        <div class="header-group">
+            <h1>Capybara Interest Survey</h1>
+            <p>We'd love to know your thoughts on capybaras! Please take a moment to answer the following questions.</p>
+        </div>
+
+        <form action="/" method="POST" class="form-questions">
+            <div class="form-div">
+                <p>How familiar are you with capybaras?</p>
+
+                <div class="form-selection-group">
+                    <label name="q1">
+                        <input type="radio" name="q1" value="Very familiar">
+                        Very familiar
+                    </label>
+                    <label name="q1">
+                        <input type="radio" name="q1" value="Somewhat familiar">
+                        Somewhat familiar
+                    </label>
+                    <label name="q1">
+                        <input type="radio" name="q1" value="Not familiar at all">
+                        Not familiar at all
+                    </label>
+                </div>
+            </div>
+            <div class="form-div">
+                <p>What do you think of capybaras?</p>
+
+                <div class="form-selection-group">
+                    <label name="q2">
+                        <input type="radio" name="q2" value="Adorable">
+                        Adorable
+                    </label>
+                    <label name="q2">
+                        <input type="radio" name="q2" value="Calm and peaceful">
+                        Calm and peaceful
+                    </label>
+                    <label name="q2">
+                        <input type="radio" name="q2" value="Fascinating">
+                        Fascinating
+                    </label>
+                    <label name="q2" value="I don't have a strong opinion">
+                        <input type="radio" name="q2">
+                        I don't have a strong opinion
+                    </label>
+                    <label name="q2" value="Other">
+                        <input type="radio" name="q2">
+                        Other
+                        <input type="text" name="q2-other" placeholder="Please specify...">
+                    </label>
+                </div>
+
+
+            </div>
+            <div class="form-div">
+                <p>When did you first hear or learn about capybaras?</p>
+
+                <div class="form-selection-group">
+
+                    <label name="q3">
+                        <input type="radio" name="q3" value="TV/Documentaries">
+                        TV/Documentaries
+                    </label>
+                    <label name="q3">
+                        <input type="radio" name="q3" value="Social media">
+                        Social media
+                    </label>
+                    <label name="q3">
+                        <input type="radio" name="q3" value="Zoo visit">
+                        Zoo visit
+                    </label>
+                    <label name="q3">
+                        <input type="radio" name="q3" value="Books/Articles">
+                        Books/Articles 
+                    </label>
+                    <label name="q3">
+                        <input type="radio" name="q3" value="Friends/Family">
+                        Friends/Family
+                    </label>
+                    <label name="q3">
+                        <input type="radio" name="q3" value="Other">
+                        Other
+                        <input type="text" name="q3-other" placeholder="Please specify...">
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-div">
+                <p>Have you ever seen a capybara in person?</p>
+
+                <div class="form-selection-group">
+                    <label name="q4">
+                        <input type="radio" name="q4" value="Friends/Family">
+                        Yes
+                    </label>
+                    <label name="q4">
+                        <input type="radio" name="q4" value="Other">
+                        No
+                    </label>
+
+                </div>
+            </div>
+
+
+            <div class="form-div">
+                <p>If you could spend a day with a capybara, what would you do?</p>
+                <textarea class="multiline-input" type="text" name="q4" placeholder="I would..."></textarea>
+            </div>
+
+            <div class="bottom-button-group">
+                <button type="submit" class="primary-button" id="submit-button">Submit</button>
+                <button>Reset</button>
+            </div>
+        </form>
+
+    </main>
+    <!-- <script>
+        const submitButton = document.getElementById('submit-button');
+
+        function onSubmit(e) {
+            // Print out all contents of the form
+            e.preventDefault();
+
+            const form = document.querySelector('form');
+            const formData = new FormData(form);
+            formData.forEach((v, k) => {
+                console.log(`${k}: ${v}`);
+            });
+        }
+
+        submitButton.addEventListener('click', onSubmit);
+    </script> -->
+</body>
