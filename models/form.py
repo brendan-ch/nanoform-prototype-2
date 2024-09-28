@@ -4,7 +4,7 @@ from typing import Optional
 
 @dataclass
 class Form:
-    form_id: Optional[int] = None
     title: str
+    form_id: Optional[int] = None
     description: str = ''
     time_created: datetime = field(default_factory=datetime.now)
