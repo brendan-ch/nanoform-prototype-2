@@ -1,23 +1,27 @@
+from flask import g
 import unittest
 import sqlite3
-from db import db_methods
+from db.repository import Repository
+from models.response import Response
 
 # TODO setup in-memory database
 
 class TestDbMethods(unittest.TestCase):
     def setUp(self):
-        pass
+        self.connection = sqlite3.connect(':memory:', check_same_thread=False)
+        self.connection.row_factory = sqlite3.Row
+        self.repository = Repository(self.connection)
 
     def tearDown(self):
-        pass
+        self.repository.close_connection()
 
     # add_user_response test cases
     # TODO write nominal test cases
     def test_add_user_response(self):
-        # db_methods.add_user_response()
         pass
 
-    # TODO write edge cases for add_user_response
+    # TODO write fail and edge cases for add_user_response
+    # - attempted multiple concurrent calls to same method
 
     # get_form_metadata test cases
     # TODO write nominal test cases
@@ -25,3 +29,4 @@ class TestDbMethods(unittest.TestCase):
         pass
 
     # TODO write edge cases for get_form_metadata
+    # - attempted multiple concurrent calls to same method
