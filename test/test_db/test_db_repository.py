@@ -1,12 +1,9 @@
-from flask import g
 import unittest
 import sqlite3
 from db.repository import Repository
 from models.response import Response
 
-# TODO setup in-memory database
-
-class TestDbMethods(unittest.TestCase):
+class TestDbRepository(unittest.TestCase):
     def setUp(self):
         self.connection = sqlite3.connect(':memory:', check_same_thread=False)
         self.connection.row_factory = sqlite3.Row
