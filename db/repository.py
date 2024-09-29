@@ -1,5 +1,5 @@
 from flask import g
-from models.response import Response
+from models.response import Response, ResponseChoice
 from models.form import Form
 from models.form_question import FormQuestion
 from models.question_choice import QuestionChoice
@@ -34,6 +34,9 @@ class Repository():
         pass
     
     def add_user_response(self, response: Response):
+        pass
+
+    def add_user_response_choice(self, response_choice: ResponseChoice):
         pass
 
     def get_form_metadata(self, form_id: int) -> Form:
