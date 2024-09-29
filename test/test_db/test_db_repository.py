@@ -4,6 +4,7 @@ from db.repository import Repository
 from models.form import Form
 from models.response import Response
 from models.form_question import FormQuestion, FormQuestionType
+from models.question_choice import QuestionChoice
 
 class TestDbRepository(unittest.TestCase):
     def setUp(self):
@@ -27,7 +28,7 @@ class TestDbRepository(unittest.TestCase):
         lastrowid = self.repository.add_form(sample_form)
 
         test_query = '''
-        SELECT form_title, form_description
+        SELECT form_title, form_description, form_id
         FROM form;
         '''
         cursor = self.connection.cursor()
@@ -37,8 +38,7 @@ class TestDbRepository(unittest.TestCase):
         self.assertEqual(len(result), 1)
         self.assertEqual(result[0]['form_title'], sample_form.title)
         self.assertEqual(result[0]['form_description'], sample_form.description)
-
-        self.assertEqual(lastrowid, 1)
+        self.assertEqual(result[0]['form_id'], lastrowid)
     
     def test_add_multiple_forms(self):
         form1 = Form(title='Capybara interest survey', description='Tell us about your experience with capybaras.')
@@ -90,19 +90,75 @@ class TestDbRepository(unittest.TestCase):
             description='We\'d love to know your thoughts on capybaras! Please take a moment to answer the following questions.'
         )
 
+        form_id = self.repository.add_form(sample_form)
+
         sample_question = FormQuestion(
             question_name="How familiar are you with capybaras?",
             question_type=FormQuestionType.MULTIPLE_CHOICE,
+            form_id=form_id
         )
 
+        question_id = self.repository.add_question(sample_question)
 
+        test_query = '''
+        SELECT question_id, form_id, question_name, question_type
+        FROM question;
+        '''
+
+        cursor = self.connection.cursor()
+        cursor.execute(test_query)
+        result = cursor.fetchall()
+
+        self.assertEqual(len(result), 1)
+        self.assertEqual(question_id, result[0]['question_id'])
+        self.assertEqual(result[0]['form_id'], form_id)
+        self.assertEqual(result[0]['question_name'], sample_question.question_name)
+        self.assertEquar(result[0]['question_type'], sample_question.question_type)
+
+    def test_add_question_choice(self):
+        sample_form = Form(
+            title='Capybara interest survey',
+            description='We\'d love to know your thoughts on capybaras! Please take a moment to answer the following questions.'
+        )
+
+        form_id = self.repository.add_form(sample_form)
+
+        sample_question = FormQuestion(
+            question_name="How familiar are you with capybaras?",
+            question_type=FormQuestionType.MULTIPLE_CHOICE,
+            form_id=form_id
+        )
+
+        question_id = self.repository.add_question(sample_question)
+
+        sample_question_choice = QuestionChoice(
+            choice_name="Very familiar",
+            choice_position=0,
+            has_free_response_field=False,
+            question_id=question_id
+        )
+
+        question_choice_id = self.repository.add_question_choice(sample_question_choice)
+
+        test_query = '''
+        SELECT choice_name, choice_position, choice_id, has_free_response_field
+        FROM choice
+        '''
+
+        cursor = self.connection.cursor()
+        cursor.execute(test_query)
+        result = cursor.fetchall()
+        
+        self.assertEqual(len(result), 1)
+        self.assertEqual(question_choice_id, result[0]['choice_id'])
+        self.assertEqual(result[0]['choice_name'], sample_question_choice.choice_name)
+        self.assertEqual(result[0]['choice_position'], sample_question_choice.choice_position)
+        self.assertEqual(result[0]['has_free_response_field'], bool(sample_question_choice.has_free_response_field))
 
     # add_user_response test cases
     # TODO write nominal test cases
     def test_add_user_response(self):
-        response = Response(
-            question_id=1,
-        )
+        pass
 
     # get_form_metadata test cases
     # TODO write nominal test cases
