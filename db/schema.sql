@@ -7,14 +7,14 @@ CREATE TABLE IF NOT EXISTS form (
 CREATE TABLE IF NOT EXISTS question (
     question_id INTEGER PRIMARY KEY AUTOINCREMENT,
     form_id INTEGER NOT NULL,
-    question_title VARCHAR(64) NOT NULL,
+    question_name VARCHAR(64) NOT NULL,
     question_type INTEGER NOT NULL,
 
     FOREIGN KEY (form_id) REFERENCES form(form_id)
 );
 
 CREATE TABLE IF NOT EXISTS choice (
-    choice_title VARCHAR(64) NOT NULL,
+    choice_name VARCHAR(64) NOT NULL,
 
     -- ID is static regardless of position within question
     -- But is unique within the associated question only
