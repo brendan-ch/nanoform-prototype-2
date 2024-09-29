@@ -2,7 +2,7 @@ import unittest
 import sqlite3
 from db.repository import Repository
 from models.form import Form
-from models.response import Response
+from models.response import Response, ResponseChoice
 from models.form_question import FormQuestion, FormQuestionType
 from models.question_choice import QuestionChoice
 
@@ -155,10 +155,56 @@ class TestDbRepository(unittest.TestCase):
         self.assertEqual(result[0]['choice_position'], sample_question_choice.choice_position)
         self.assertEqual(result[0]['has_free_response_field'], bool(sample_question_choice.has_free_response_field))
 
-    # add_user_response test cases
-    # TODO write nominal test cases
-    def test_add_user_response(self):
-        pass
+    def test_add_user_response_and_response_choice(self):
+        sample_form = Form(
+            title='Capybara interest survey',
+            description='We\'d love to know your thoughts on capybaras! Please take a moment to answer the following questions.'
+        )
+        form_id = self.repository.add_form(sample_form)
+
+        sample_question = FormQuestion(
+            question_name="How familiar are you with capybaras?",
+            question_type=FormQuestionType.MULTIPLE_CHOICE,
+            form_id=form_id
+        )
+        question_id = self.repository.add_question(sample_question)
+
+        sample_question_choice = QuestionChoice(
+            choice_name="Very familiar",
+            choice_position=0,
+            has_free_response_field=False,
+            question_id=question_id
+        )
+        question_choice_id = self.repository.add_question_choice(sample_question_choice)
+
+        sample_response = Response(
+            question_id=1,
+        )
+        response_id = self.repository.add_user_response(sample_response)
+
+        sample_response_choice = ResponseChoice(
+            choice_id=question_choice_id,
+            response_id=response_id,
+        )
+
+        self.repository.add_user_response_choice(sample_response_choice)
+
+        test_query = '''
+        SELECT response.time_submitted, response.question_id, response.response_id, response_choice.choice_id
+        FROM response
+        INNER JOIN response_choice
+        ON response_choice.response_id = response.response_id
+        '''
+
+        cursor = self.connection.cursor()
+        cursor.execute(test_query)
+        result = cursor.fetchall()
+        
+        self.assertEqual(len(result), 1)
+        self.assertEqual(result[0]['time_submitted'], sample_response.timestamp)
+        self.assertEqual(result[0]['question_id'], sample_response.question_id)
+        self.assertEqual(result[0]['response_id'], sample_response.response_id)
+        self.assertEqual(result[0]['choice_id'], sample_response_choice.choice_id)
 
     # get_form_metadata test cases
     # TODO write nominal test cases
