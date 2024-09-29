@@ -8,7 +8,7 @@ import sqlite3
 DATABASE = './database.db'
 
 class Repository():
-    def __init__(self, connection = sqlite3.connect(':memory:', check_same_thread=False)):
+    def __init__(self, connection = sqlite3.connect(DATABASE, check_same_thread=False)):
         self.connection = connection
 
     def add_form(self, form: Form):
