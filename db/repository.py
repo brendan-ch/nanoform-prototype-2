@@ -12,7 +12,18 @@ class Repository():
         self.connection = connection
 
     def add_form(self, form: Form):
-        pass
+        cursor = self.connection.cursor()
+        query = """
+            INSERT INTO form (form_title, form_description)
+            VALUES (?, ?)
+        """
+        params = (form.title, form.description)
+
+        try:
+            cursor.execute(query, params)
+        except sqlite3.IntegrityError as e:
+            raise ValueError(e)
+
 
     def add_question(self, question: FormQuestion):
         pass
