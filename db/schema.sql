@@ -16,13 +16,11 @@ CREATE TABLE IF NOT EXISTS question (
 CREATE TABLE IF NOT EXISTS choice (
     choice_name VARCHAR(64) NOT NULL,
 
-    -- ID is static regardless of position within question
-    -- But is unique within the associated question only
-    choice_id INTEGER NOT NULL,
+    choice_id INTEGER PRIMARY KEY AUTOINCREMENT,
     question_id INTEGER NOT NULL,
     choice_position INTEGER UNIQUE NOT NULL,
+    has_free_response_field BOOLEAN NOT NULL DEFAULT FALSE,
 
-    PRIMARY KEY (choice_id, question_id)
     FOREIGN KEY (question_id) REFERENCES question(question_id)
 );
 
