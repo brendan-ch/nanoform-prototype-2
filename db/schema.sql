@@ -5,9 +5,10 @@ CREATE TABLE IF NOT EXISTS form (
 );
 
 CREATE TABLE IF NOT EXISTS question (
-    question_id INTEGER NOT NULL PRIMARY KEY,
+    question_id INTEGER PRIMARY KEY AUTOINCREMENT,
     form_id INTEGER NOT NULL,
     question_title VARCHAR(64) NOT NULL,
+    question_type INTEGER NOT NULL,
 
     FOREIGN KEY (form_id) REFERENCES form(form_id)
 );
