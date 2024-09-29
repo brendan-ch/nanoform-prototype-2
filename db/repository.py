@@ -28,7 +28,20 @@ class Repository():
 
 
     def add_question(self, question: FormQuestion):
-        pass
+        cursor = self.connection.cursor()
+        query = '''
+        INSERT INTO question (form_id, question_name, question_type)
+        VALUES (?, ?, ?)
+        '''
+
+        params = (question.form_id, question.question_name, question.question_type.value)
+        
+        try:
+            cursor.execute(query, params)
+            self.connection.commit()
+            return cursor.lastrowid
+        except sqlite3.IntegrityError as e:
+            return ValueError(e)
 
     def add_question_choice(self, question_choice: QuestionChoice):
         pass
