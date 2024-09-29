@@ -21,6 +21,8 @@ class Repository():
 
         try:
             cursor.execute(query, params)
+            self.connection.commit()
+            return cursor.lastrowid
         except sqlite3.IntegrityError as e:
             raise ValueError(e)
 
