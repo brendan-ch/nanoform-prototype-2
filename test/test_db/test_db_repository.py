@@ -36,7 +36,28 @@ class TestDbRepository(unittest.TestCase):
         self.assertEqual(len(result), 1)
         self.assertEqual(result[0]['form_title'], sample_form.title)
         self.assertEqual(result[0]['form_description'], sample_form.description)
-        
+    
+    def test_add_multiple_forms(self):
+        form1 = Form(title='Capybara interest survey', description='Tell us about your experience with capybaras.')
+        form2 = Form(title='Capybara feedback', description='Provide feedback on our recent capybara event.')
+
+        self.repository.add_form(form1)
+        self.repository.add_form(form2)
+
+        test_query = '''
+        SELECT form_title, form_description
+        FROM form;
+        '''
+        cursor = self.connection.cursor()
+        cursor.execute(test_query)
+        result = cursor.fetchall()
+
+        self.assertEqual(len(result), 2)
+        self.assertEqual(result[0]['form_title'], form1.title)
+        self.assertEqual(result[0]['form_description'], form1.description)
+        self.assertEqual(result[1]['form_title'], form2.title)
+        self.assertEqual(result[1]['form_description'], form2.description)
+
     # add_user_response test cases
     # TODO write nominal test cases
     def test_add_user_response(self):
