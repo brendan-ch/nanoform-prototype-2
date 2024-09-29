@@ -1,5 +1,6 @@
 import unittest
 import sqlite3
+from datetime import datetime
 from db.repository import Repository
 from models.form import Form
 from models.response import Response, ResponseChoice
@@ -199,11 +200,13 @@ class TestDbRepository(unittest.TestCase):
         cursor = self.connection.cursor()
         cursor.execute(test_query)
         result = cursor.fetchall()
-        
+
         self.assertEqual(len(result), 1)
-        self.assertEqual(result[0]['time_submitted'], sample_response.timestamp)
+
+        date_from_string = datetime.strptime(result[0]['time_submitted'], '%Y-%m-%d %H:%M:%S.%f')
+        self.assertEqual(date_from_string, sample_response.timestamp)
         self.assertEqual(result[0]['question_id'], sample_response.question_id)
-        self.assertEqual(result[0]['response_id'], sample_response.response_id)
+        self.assertEqual(result[0]['response_id'], sample_response_choice.response_id)
         self.assertEqual(result[0]['choice_id'], sample_response_choice.choice_id)
 
     # get_form_metadata test cases
