@@ -65,10 +65,34 @@ class Repository():
             return ValueError(e)
     
     def add_user_response(self, response: Response):
-        pass
+        cursor = self.connection.cursor()
+        query = '''
+        INSERT INTO response (time_submitted, question_id)
+        VALUES (?, ?)
+        '''
+
+        params = (response.timestamp, response.question_id)
+        try:
+            cursor.execute(query, params)
+            self.connection.commit()
+            return cursor.lastrowid
+        except sqlite3.IntegrityError as e:
+            return ValueError(e)
 
     def add_user_response_choice(self, response_choice: ResponseChoice):
-        pass
+        cursor = self.connection.cursor()
+        query = '''
+        INSERT INTO response_choice (choice_id, response_id, associated_text)
+        VALUES (?, ?, ?)
+        '''
+
+        params = (response_choice.choice_id, response_choice.response_id, response_choice.associated_text)
+        try:
+            cursor.execute(query, params)
+            self.connection.commit()
+            return cursor.lastrowid
+        except sqlite3.IntegrityError as e:
+            return ValueError(e)
 
     def get_form_metadata(self, form_id: int) -> Form:
         pass
