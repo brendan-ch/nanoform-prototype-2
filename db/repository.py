@@ -44,7 +44,25 @@ class Repository():
             return ValueError(e)
 
     def add_question_choice(self, question_choice: QuestionChoice):
-        pass
+        cursor = self.connection.cursor()
+        query = '''
+        INSERT INTO choice (question_id, choice_name, choice_position, has_free_response_field)
+        VALUES (?, ?, ?, ?)
+        '''
+
+        params = (
+            question_choice.question_id,
+            question_choice.choice_name,
+            question_choice.choice_position,
+            question_choice.has_free_response_field
+        )
+        
+        try:
+            cursor.execute(query, params)
+            self.connection.commit()
+            return cursor.lastrowid
+        except sqlite3.IntegrityError as e:
+            return ValueError(e)
     
     def add_user_response(self, response: Response):
         pass
