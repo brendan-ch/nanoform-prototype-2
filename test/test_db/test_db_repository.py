@@ -113,7 +113,7 @@ class TestDbRepository(unittest.TestCase):
         self.assertEqual(question_id, result[0]['question_id'])
         self.assertEqual(result[0]['form_id'], form_id)
         self.assertEqual(result[0]['question_name'], sample_question.question_name)
-        self.assertEquar(result[0]['question_type'], sample_question.question_type)
+        self.assertEqual(result[0]['question_type'], sample_question.question_type.value)
 
     def test_add_question_choice(self):
         sample_form = Form(
