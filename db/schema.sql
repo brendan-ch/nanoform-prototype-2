@@ -29,14 +29,19 @@ CREATE TABLE IF NOT EXISTS choice (
 CREATE TABLE IF NOT EXISTS response (
     time_submitted DATE NOT NULL,
     question_id INTEGER NOT NULL,
-
-    selected_choice INTEGER,
-    -- Text associated with "Other" response, and free response text
-    associated_text VARCHAR(128),
-
     response_id INTEGER PRIMARY KEY AUTOINCREMENT,
 
     FOREIGN KEY (question_id) REFERENCES question(question_id)
-    FOREIGN KEY (selected_choice) REFERENCES choice(choice_id)
 );
 
+CREATE TABLE IF NOT EXISTS response_choice (
+    choice_id INTEGER NOT NULL,
+    response_id INTEGER NOT NULL,
+
+    -- Text associated with "Other" response, and free response text
+    associated_text VARCHAR(128),
+
+    PRIMARY KEY (response_id, choice_id)
+    FOREIGN KEY (response_id) REFERENCES response(response_id)
+    FOREIGN KEY (choice_id) REFERENCES choice(choice_id)
+)
