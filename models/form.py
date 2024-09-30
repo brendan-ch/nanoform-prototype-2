@@ -7,4 +7,3 @@ class Form:
     form_title: str
     form_id: Optional[int] = None
     form_description: str = ''
-    time_created: datetime = field(default_factory=datetime.now)
