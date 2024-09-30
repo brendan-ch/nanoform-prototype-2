@@ -22,8 +22,8 @@ class TestDbRepository(unittest.TestCase):
 
     def test_add_form_and_return_row_id(self):
         sample_form = Form(
-            title='Capybara interest survey',
-            description='We\'d love to know your thoughts on capybaras! Please take a moment to answer the following questions.'
+            form_title='Capybara interest survey',
+            form_description='We\'d love to know your thoughts on capybaras! Please take a moment to answer the following questions.'
         )
 
         lastrowid = self.repository.add_form(sample_form)
@@ -37,13 +37,13 @@ class TestDbRepository(unittest.TestCase):
         result = cursor.fetchall()
 
         self.assertEqual(len(result), 1)
-        self.assertEqual(result[0]['form_title'], sample_form.title)
-        self.assertEqual(result[0]['form_description'], sample_form.description)
+        self.assertEqual(result[0]['form_title'], sample_form.form_title)
+        self.assertEqual(result[0]['form_description'], sample_form.form_description)
         self.assertEqual(result[0]['form_id'], lastrowid)
     
     def test_add_multiple_forms(self):
-        form1 = Form(title='Capybara interest survey', description='Tell us about your experience with capybaras.')
-        form2 = Form(title='Capybara feedback', description='Provide feedback on our recent capybara event.')
+        form1 = Form(form_title='Capybara interest survey', form_description='Tell us about your experience with capybaras.')
+        form2 = Form(form_title='Capybara feedback', form_description='Provide feedback on our recent capybara event.')
 
         rowid1 = self.repository.add_form(form1)
         rowid2 = self.repository.add_form(form2)
@@ -57,17 +57,17 @@ class TestDbRepository(unittest.TestCase):
         result = cursor.fetchall()
 
         self.assertEqual(len(result), 2)
-        self.assertEqual(result[0]['form_title'], form1.title)
-        self.assertEqual(result[0]['form_description'], form1.description)
-        self.assertEqual(result[1]['form_title'], form2.title)
-        self.assertEqual(result[1]['form_description'], form2.description)
+        self.assertEqual(result[0]['form_title'], form1.form_title)
+        self.assertEqual(result[0]['form_description'], form1.form_description)
+        self.assertEqual(result[1]['form_title'], form2.form_title)
+        self.assertEqual(result[1]['form_description'], form2.form_description)
 
         self.assertEqual(rowid1, 1)
         self.assertEqual(rowid2, 2)
 
     def test_add_form_rollback_on_failure(self):
-        form1 = Form(title='Valid Form', description='Valid description')
-        form2 = Form(title=None, description='Invalid Form')
+        form1 = Form(form_title='Valid Form', form_description='Valid description')
+        form2 = Form(form_title=None, form_description='Invalid Form')
 
         self.repository.add_form(form1)
         with self.assertRaises(ValueError):
@@ -83,12 +83,12 @@ class TestDbRepository(unittest.TestCase):
         result = cursor.fetchall()
 
         self.assertEqual(len(result), 1)
-        self.assertEqual(result[0]['form_title'], form1.title)
+        self.assertEqual(result[0]['form_title'], form1.form_title)
 
     def test_add_question(self):
         sample_form = Form(
-            title='Capybara interest survey',
-            description='We\'d love to know your thoughts on capybaras! Please take a moment to answer the following questions.'
+            form_title='Capybara interest survey',
+            form_description='We\'d love to know your thoughts on capybaras! Please take a moment to answer the following questions.'
         )
 
         form_id = self.repository.add_form(sample_form)
@@ -118,8 +118,8 @@ class TestDbRepository(unittest.TestCase):
 
     def test_add_question_choice(self):
         sample_form = Form(
-            title='Capybara interest survey',
-            description='We\'d love to know your thoughts on capybaras! Please take a moment to answer the following questions.'
+            form_title='Capybara interest survey',
+            form_description='We\'d love to know your thoughts on capybaras! Please take a moment to answer the following questions.'
         )
 
         form_id = self.repository.add_form(sample_form)
@@ -158,8 +158,8 @@ class TestDbRepository(unittest.TestCase):
 
     def test_add_user_response_and_response_choice(self):
         sample_form = Form(
-            title='Capybara interest survey',
-            description='We\'d love to know your thoughts on capybaras! Please take a moment to answer the following questions.'
+            form_title='Capybara interest survey',
+            form_description='We\'d love to know your thoughts on capybaras! Please take a moment to answer the following questions.'
         )
         form_id = self.repository.add_form(sample_form)
 
@@ -213,23 +213,23 @@ class TestDbRepository(unittest.TestCase):
     # TODO write nominal test cases
     def test_get_form_metadata(self):
         sample_form = Form(
-            title='Capybara interest survey',
-            description='We\'d love to know your thoughts on capybaras! Please take a moment to answer the following questions.'
+            form_title='Capybara interest survey',
+            form_description='We\'d love to know your thoughts on capybaras! Please take a moment to answer the following questions.'
         )
 
         query = '''
             INSERT INTO form (form_title, form_description)
             VALUES (?, ?)
         '''
-        params = (sample_form.title, sample_form.description)
+        params = (sample_form.form_title, sample_form.form_description)
 
         cursor = self.connection.cursor()
         cursor.execute(query, params)
         form_id = cursor.lastrowid
 
         form = self.repository.get_form_metadata(form_id)
-        self.assertEqual(form.description, sample_form.description)
-        self.assertEqual(form.title, sample_form.title)
+        self.assertEqual(form.form_description, sample_form.form_description)
+        self.assertEqual(form.form_title, sample_form.form_title)
         self.assertEqual(form.form_id, form_id)
 
 

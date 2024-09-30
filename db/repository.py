@@ -17,7 +17,7 @@ class Repository():
             INSERT INTO form (form_title, form_description)
             VALUES (?, ?)
         """
-        params = (form.title, form.description)
+        params = (form.form_title, form.form_description)
 
         try:
             cursor.execute(query, params)
@@ -95,7 +95,18 @@ class Repository():
             return ValueError(e)
 
     def get_form_metadata(self, form_id: int) -> Form:
-        pass
+        cursor = self.connection.cursor()
+        query = '''
+        SELECT form_title, form_description, form_id
+        FROM form
+        WHERE form_id = ?
+        '''
+
+        params = (form_id,)
+        cursor.execute(query, params)
+        result = cursor.fetchone()
+
+        return Form(**result)
 
     def close_connection(self):
         self.connection.close()
