@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS choice (
 
     choice_id INTEGER PRIMARY KEY AUTOINCREMENT,
     question_id INTEGER NOT NULL,
-    choice_position INTEGER UNIQUE NOT NULL,
+    choice_position INTEGER NOT NULL,
     has_free_response_field BOOLEAN NOT NULL DEFAULT FALSE,
 
     FOREIGN KEY (question_id) REFERENCES question(question_id)
