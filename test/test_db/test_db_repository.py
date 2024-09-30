@@ -209,8 +209,6 @@ class TestDbRepository(unittest.TestCase):
         self.assertEqual(result[0]['response_id'], sample_response_choice.response_id)
         self.assertEqual(result[0]['choice_id'], sample_response_choice.choice_id)
 
-    # get_form_metadata test cases
-    # TODO write nominal test cases
     def test_get_form_metadata(self):
         sample_form = Form(
             form_title='Capybara interest survey',
@@ -232,6 +230,3 @@ class TestDbRepository(unittest.TestCase):
         self.assertEqual(form.form_title, sample_form.form_title)
         self.assertEqual(form.form_id, form_id)
 
-
-    # TODO write edge cases for get_form_metadata
-    # - attempted multiple concurrent calls to same method
