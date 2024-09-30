@@ -3,6 +3,7 @@ from models.response import Response, ResponseChoice
 from models.form import Form
 from models.form_question import FormQuestion
 from models.question_choice import QuestionChoice
+from models.form_with_questions import FormWithQuestions
 import sqlite3
 
 DATABASE = './database.db'
@@ -107,6 +108,14 @@ class Repository():
         result = cursor.fetchone()
 
         return Form(**result)
+
+    def get_form_with_questions(self, form_id: int) -> FormWithQuestions:
+        # TODO implement the following methods
+        # self.get_form_metadata(form_id)
+        # self.get_questions_associated_with_form(form_id)
+        # self.get_choices_associated_with_form(form_id)
+
+        pass
 
     def close_connection(self):
         self.connection.close()
