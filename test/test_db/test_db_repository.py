@@ -212,7 +212,26 @@ class TestDbRepository(unittest.TestCase):
     # get_form_metadata test cases
     # TODO write nominal test cases
     def test_get_form_metadata(self):
-        pass
+        sample_form = Form(
+            title='Capybara interest survey',
+            description='We\'d love to know your thoughts on capybaras! Please take a moment to answer the following questions.'
+        )
+
+        query = '''
+            INSERT INTO form (form_title, form_description)
+            VALUES (?, ?)
+        '''
+        params = (sample_form.title, sample_form.description)
+
+        cursor = self.connection.cursor()
+        cursor.execute(query, params)
+        form_id = cursor.lastrowid
+
+        form = self.repository.get_form_metadata(form_id)
+        self.assertEqual(form.description, sample_form.description)
+        self.assertEqual(form.title, sample_form.title)
+        self.assertEqual(form.form_id, form_id)
+
 
     # TODO write edge cases for get_form_metadata
     # - attempted multiple concurrent calls to same method
