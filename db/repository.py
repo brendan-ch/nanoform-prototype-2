@@ -96,6 +96,8 @@ class Repository():
             return ValueError(e)
 
     def get_form_metadata(self, form_id: int) -> Form:
+        # TODO implement improved error handling
+        # in case the form doesn't exist
         cursor = self.connection.cursor()
         query = '''
         SELECT form_title, form_description, form_id
@@ -111,7 +113,7 @@ class Repository():
 
     def get_form_with_questions(self, form_id: int) -> FormWithQuestions:
         # TODO implement the following methods
-        # self.get_form_metadata(form_id)
+        # form = self.get_form_metadata(form_id)
         # self.get_questions_associated_with_form(form_id)
         # self.get_choices_associated_with_form(form_id)
 
