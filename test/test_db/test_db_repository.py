@@ -6,6 +6,8 @@ from models.form import Form
 from models.response import Response, ResponseChoice
 from models.form_question import FormQuestion, FormQuestionType
 from models.question_choice import QuestionChoice
+from models.form_with_questions import FormWithQuestions
+from models.form_question_with_choices import FormQuestionWithChoices
 
 class TestDbRepository(unittest.TestCase):
     def setUp(self):
@@ -230,3 +232,67 @@ class TestDbRepository(unittest.TestCase):
         self.assertEqual(form.form_title, sample_form.form_title)
         self.assertEqual(form.form_id, form_id)
 
+    def test_get_form_with_questions(self):
+        # TODO check whether the method returns the exact same data model
+        # TODO check whether question choices are returned in order
+
+        sample_questions = [
+            FormQuestionWithChoices(
+                question_type=FormQuestionType.MULTIPLE_CHOICE,
+                question_name='How familiar are you with capybaras?',
+                choices=[
+                    QuestionChoice(
+                        choice_name='Very familiar',
+                        choice_position=0,
+                        has_free_response_field=False
+                    ),
+                    QuestionChoice(
+                        choice_name='Somewhat familiar',
+                        choice_position=1,
+                        has_free_response_field=False
+                    ),
+                    QuestionChoice(
+                        choice_name='Not familiar at all',
+                        choice_position=2,
+                        has_free_response_field=False
+                    )
+                ]
+            ),
+            FormQuestionWithChoices(
+                question_type=FormQuestionType.MULTIPLE_CHOICE,
+                question_name='What do you think of capybaras?',
+                choices=[
+                    QuestionChoice(
+                        choice_name='Adorable',
+                        choice_position=0,
+                        has_free_response_field=False
+                    ),
+                    QuestionChoice(
+                        choice_name='Calm and peaceful',
+                        choice_position=1,
+                        has_free_response_field=False
+                    ),
+                    QuestionChoice(
+                        choice_name='Fascinating',
+                        choice_position=2,
+                        has_free_response_field=False
+                    ),
+                    QuestionChoice(
+                        choice_name='I don\'t have a strong opinion',
+                        choice_position=3,
+                        has_free_response_field=False
+                    ),
+                    QuestionChoice(
+                        choice_name='Other',
+                        choice_position=4,
+                        has_free_response_field=True
+                    ),
+                ]
+            ),
+        ]
+
+        sample_form_with_questions = FormWithQuestions(
+            form_title='Capybara interest survey',
+            form_description='We\'d love to know your thoughts on capybaras! Please take a moment to answer the following questions.',
+            sample_form_with_questions=sample_questions
+        )
