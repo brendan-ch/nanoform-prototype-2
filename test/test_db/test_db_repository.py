@@ -233,6 +233,26 @@ class TestDbRepository(unittest.TestCase):
         self.assertEqual(form.form_title, sample_form.form_title)
         self.assertEqual(form.form_id, form_id)
 
+    def test_get_form_metadata_not_found(self):
+        sample_form = Form(
+            form_title='Capybara interest survey',
+            form_description='We\'d love to know your thoughts on capybaras! Please take a moment to answer the following questions.'
+        )
+
+        query = '''
+            INSERT INTO form (form_title, form_description)
+            VALUES (?, ?)
+        '''
+        params = (sample_form.form_title, sample_form.form_description)
+        cursor = self.connection.cursor()
+        cursor.execute(query, params)
+        self.connection.rollback()
+
+        # TODO introduce a more specific exception for this method
+        form_id = 1
+        with self.assertRaises(Exception):
+            self.repository.get_form_metadata(form_id)
+
     def test_get_form_with_questions(self):
         # TODO check whether the method returns the exact same data model
         # TODO check whether question choices are returned in order
