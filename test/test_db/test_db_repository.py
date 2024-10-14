@@ -225,6 +225,7 @@ class TestDbRepository(unittest.TestCase):
 
         cursor = self.connection.cursor()
         cursor.execute(query, params)
+        self.connection.commit()
         form_id = cursor.lastrowid
 
         form = self.repository.get_form_metadata(form_id)
