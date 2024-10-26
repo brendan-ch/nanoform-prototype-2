@@ -31,11 +31,11 @@ class Repository():
     def add_question(self, question: FormQuestion):
         cursor = self.connection.cursor()
         query = '''
-        INSERT INTO question (form_id, question_name, question_type)
-        VALUES (?, ?, ?)
+        INSERT INTO question (form_id, question_name, question_type, question_position)
+        VALUES (?, ?, ?, ?)
         '''
 
-        params = (question.form_id, question.question_name, question.question_type.value)
+        params = (question.form_id, question.question_name, question.question_type.value, question.question_position)
         
         try:
             cursor.execute(query, params)
@@ -112,10 +112,6 @@ class Repository():
         return Form(**result)
 
     def get_form_with_questions(self, form_id: int) -> FormWithQuestions:
-        # TODO implement the following methods
-        # form = self.get_form_metadata(form_id)
-        # self.get_questions_associated_with_form(form_id)
-        # self.get_choices_associated_with_form(form_id)
 
         pass
 

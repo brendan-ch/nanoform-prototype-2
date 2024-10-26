@@ -98,7 +98,8 @@ class TestDbRepository(unittest.TestCase):
         sample_question = FormQuestion(
             question_name="How familiar are you with capybaras?",
             question_type=FormQuestionType.MULTIPLE_CHOICE,
-            form_id=form_id
+            form_id=form_id,
+            question_position=0
         )
 
         question_id = self.repository.add_question(sample_question)
@@ -129,7 +130,8 @@ class TestDbRepository(unittest.TestCase):
         sample_question = FormQuestion(
             question_name="How familiar are you with capybaras?",
             question_type=FormQuestionType.MULTIPLE_CHOICE,
-            form_id=form_id
+            form_id=form_id,
+            question_position=0
         )
 
         question_id = self.repository.add_question(sample_question)
@@ -168,7 +170,8 @@ class TestDbRepository(unittest.TestCase):
         sample_question = FormQuestion(
             question_name="How familiar are you with capybaras?",
             question_type=FormQuestionType.MULTIPLE_CHOICE,
-            form_id=form_id
+            form_id=form_id,
+            question_position=0
         )
         question_id = self.repository.add_question(sample_question)
 

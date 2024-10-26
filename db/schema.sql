@@ -8,6 +8,7 @@ CREATE TABLE IF NOT EXISTS question (
     question_id INTEGER PRIMARY KEY AUTOINCREMENT,
     form_id INTEGER NOT NULL,
     question_name VARCHAR(64) NOT NULL,
+    question_position INTEGER NOT NULL,
     question_type INTEGER NOT NULL,
 
     FOREIGN KEY (form_id) REFERENCES form(form_id)

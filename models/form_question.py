@@ -12,5 +12,6 @@ class FormQuestionType(Enum):
 class FormQuestion:
     question_type: FormQuestionType
     question_name: str
+    question_position: int
     question_id: Optional[int] = None
     form_id: Optional[int] = None
