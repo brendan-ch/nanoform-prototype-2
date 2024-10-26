@@ -254,9 +254,6 @@ class TestDbRepository(unittest.TestCase):
             self.repository.get_form_metadata(form_id)
 
     def test_get_form_with_questions(self):
-        # TODO check whether the method returns the exact same data model
-        # TODO check whether question choices are returned in order
-
         sample_questions = [
             FormQuestionWithChoices(
                 question_type=FormQuestionType.MULTIPLE_CHOICE,
@@ -335,24 +332,24 @@ class TestDbRepository(unittest.TestCase):
 
         # TODO surely there's a better way to get a bunch of question IDs
         # from an executemany statement, rather than looping execute statements
-        for question in sample_questions:
+        for question_to_validate_against in sample_questions:
             params = (
                 sample_form_with_questions.form_id,
-                question.question_name,
-                question.question_type.value,
+                question_to_validate_against.question_name,
+                question_to_validate_against.question_type.value,
             )
 
             cursor.execute(insert_question_query, params)
-            question.question_id = cursor.lastrowid
+            question_to_validate_against.question_id = cursor.lastrowid
             
-            for choice in question.choices:
-                choice.question_id = question.question_id
+            for choice in question_to_validate_against.choices:
+                choice.question_id = question_to_validate_against.question_id
 
         insert_choice_query = '''
             INSERT INTO choice (choice_name, question_id, choice_position, has_free_response_field)
             VALUES (?, ?, ?, ?);
         '''
-        for question in sample_questions:
+        for question_to_validate_against in sample_questions:
             params = [
                 (
                     choice.choice_name,
@@ -360,9 +357,35 @@ class TestDbRepository(unittest.TestCase):
                     choice.choice_position,
                     choice.has_free_response_field
                 )
-                for choice in question.choices
+                for choice in question_to_validate_against.choices
             ]
 
             cursor.executemany(insert_choice_query, params)
 
         self.connection.commit()
+
+        form_to_validate = self.repository.get_form_with_questions(sample_form_with_questions.form_id)
+        self.assertEqual(form_to_validate.form_id, sample_form_with_questions.form_id)
+        self.assertEqual(form_to_validate.form_description, sample_form_with_questions.form_description)
+        self.assertEqual(form_to_validate.form_title, sample_form_with_questions.form_title)
+
+        self.assertEqual(len(form_to_validate.questions), len(sample_form_with_questions.questions))
+
+        # Use index to validate order of questions returned
+        for i in range(len(sample_form_with_questions.questions)):
+            question_to_validate_against = sample_form_with_questions.questions[i]
+            question_to_validate = form_to_validate.questions[i]
+
+            self.assertEqual(question_to_validate.form_id, form_to_validate.form_id)
+            self.assertEqual(question_to_validate_against.question_name, question_to_validate.question_name)
+            self.assertEqual(question_to_validate_against.question_id, question_to_validate.question_id)
+            self.assertEqual(question_to_validate_against.question_type, question_to_validate.question_type)
+
+            for j in range(len(question_to_validate.choices)):
+                choice_to_validate_against = question_to_validate_against.choices[j]
+                choice_to_validate = question_to_validate.choices[j]
+            
+                self.assertEqual(choice_to_validate.question_id, question_to_validate_against.question_id)
+                self.assertEqual(choice_to_validate.choice_name, choice_to_validate_against.choice_name)
+                self.assertEqual(choice_to_validate.choice_position, choice_to_validate_against.choice_position)
+                self.assertEqual(choice_to_validate.choice_id, choice_to_validate_against.choice_id)
