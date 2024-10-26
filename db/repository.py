@@ -5,9 +5,14 @@ from models.form_question import FormQuestion
 from models.form_question_with_choices import FormQuestionWithChoices
 from models.question_choice import QuestionChoice
 from models.form_with_questions import FormWithQuestions
+from dataclasses import field, fields
 import sqlite3
 
 DATABASE = './database.db'
+
+def filter_dict_for_dataclass(data: dict, cls) -> dict:
+    """Filter dictionary to match the dataclass fields."""
+    return {k: v for k, v in data.items() if k in {field.name for field in fields(cls)}}
 
 class Repository():
     def __init__(self, connection = sqlite3.connect(DATABASE, check_same_thread=False)):
@@ -126,10 +131,22 @@ class Repository():
         # write separate tests
 
         get_questions_query = '''
-        SELECT question_type, question_name, question_id, form_id, question_position
-        FROM question
-        WHERE form_id = ?
-        ORDER BY question_position ASC;
+        SELECT
+            choice.choice_id,
+            choice.choice_name,
+            choice.choice_position,
+            choice.has_free_response_field,
+            choice.question_id,
+            q.question_type,
+            q.question_name,
+            q.form_id,
+            q.question_position
+        FROM choice
+        INNER JOIN (SELECT question_type, question_name, question_id, form_id, question_position
+            FROM question
+            WHERE form_id = ?
+            ORDER BY question_position ASC) q
+            ON q.question_id = choice.question_id;
         '''
 
         cursor = self.connection.cursor()
@@ -137,9 +154,20 @@ class Repository():
         cursor.execute(get_questions_query, params)
         results = cursor.fetchall()
 
-        form_with_questions.questions = [FormQuestionWithChoices(**result) for result in results]
+        questions: dict[int, FormQuestionWithChoices] = {}
+        for result in results:
+            result_for_question = filter_dict_for_dataclass(dict(**result), FormQuestion)
+            question = FormQuestionWithChoices(**result_for_question)
+            if question.question_id not in questions:
+                questions[question.question_id] = question
 
+            if not questions[question.question_id].choices:
+                questions[question.question_id].choices = []
 
+            result_for_choice = filter_dict_for_dataclass(dict(**result), QuestionChoice)
+            questions[question.question_id].choices.append(QuestionChoice(**result_for_choice))
+
+        form_with_questions.questions = list(questions.values())
         return form_with_questions
 
     def close_connection(self):
