@@ -15,3 +15,7 @@ class FormQuestion:
     question_position: int
     question_id: Optional[int] = None
     form_id: Optional[int] = None
+
+    def __post_init__(self):
+        if isinstance(self.question_type, int):
+            self.question_type = FormQuestionType(self.question_type)
