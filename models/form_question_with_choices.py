@@ -1,7 +1,8 @@
 from dataclasses import dataclass, field
 from models.question_choice import QuestionChoice
 from models.form_question import FormQuestion
+from typing import Optional
 
 @dataclass
 class FormQuestionWithChoices(FormQuestion):
-    choices: list[QuestionChoice] = field(default_factory=[])
+    choices: Optional[list[QuestionChoice]] = None
