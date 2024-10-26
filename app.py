@@ -21,9 +21,9 @@ def index():
 @app.route("/form/<int:form_id>")
 def show_form(form_id: int):
     repo = get_repository()
-    # TODO add improved error handling, check if form exists
+    # TODO add improved error handling, check if the form exists
     form = repo.get_form_with_questions(form_id)
-    render_template('form_template.html', **form.__dict__)
+    return render_template('form_template.html', **form.__dict__)
     
 @app.teardown_appcontext
 def close_repository(exception):
