@@ -1,11 +1,12 @@
 from flask import Flask, g, render_template, request
+from typing import Optional
 from db.repository import Repository
 
 app = Flask(__name__)
 
 def get_repository():
-    repository = getattr(g, '_repository', None)
-    if not repository:
+    repository: Optional[Repository] = getattr(g, '_repository', None)
+    if not repository or not repository.connection_is_open:
         repository = g._repository = Repository()
     return repository
 

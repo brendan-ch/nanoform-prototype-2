@@ -15,8 +15,13 @@ def filter_dict_for_dataclass(data: dict, cls) -> dict:
     return {k: v for k, v in data.items() if k in {field.name for field in fields(cls)}}
 
 class Repository():
-    def __init__(self, connection = sqlite3.connect(DATABASE, check_same_thread=False)):
-        self.connection = connection
+    def __init__(self, connection = None):
+        if not connection:
+            self.connection = sqlite3.connect(DATABASE, check_same_thread=False)
+        else:
+            self.connection = connection
+
+        self.connection_is_open = True
 
     def add_form(self, form: Form):
         cursor = self.connection.cursor()
@@ -173,3 +178,4 @@ class Repository():
 
     def close_connection(self):
         self.connection.close()
+        self.connection_is_open = False
