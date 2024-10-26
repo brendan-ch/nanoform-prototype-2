@@ -105,6 +105,7 @@ class Repository():
         # TODO implement improved error handling
         # in case the form doesn't exist
         cursor = self.connection.cursor()
+        cursor.row_factory = sqlite3.Row
         query = '''
         SELECT form_title, form_description, form_id
         FROM form
