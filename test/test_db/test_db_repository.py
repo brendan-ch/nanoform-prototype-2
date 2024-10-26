@@ -356,17 +356,16 @@ class TestDbRepository(unittest.TestCase):
             VALUES (?, ?, ?, ?);
         '''
         for question_to_validate_against in sample_questions:
-            params = [
-                (
+            for choice in question_to_validate_against.choices:
+                params = (
                     choice.choice_name,
                     choice.question_id,
                     choice.choice_position,
                     choice.has_free_response_field
                 )
-                for choice in question_to_validate_against.choices
-            ]
 
-            cursor.executemany(insert_choice_query, params)
+                cursor.execute(insert_choice_query, params)
+                choice.choice_id = cursor.lastrowid
 
         self.connection.commit()
 
