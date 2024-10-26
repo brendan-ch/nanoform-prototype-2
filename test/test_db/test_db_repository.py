@@ -259,6 +259,7 @@ class TestDbRepository(unittest.TestCase):
     def test_get_form_with_questions(self):
         sample_questions = [
             FormQuestionWithChoices(
+                question_position=0,
                 question_type=FormQuestionType.MULTIPLE_CHOICE,
                 question_name='How familiar are you with capybaras?',
                 choices=[
@@ -280,6 +281,7 @@ class TestDbRepository(unittest.TestCase):
                 ]
             ),
             FormQuestionWithChoices(
+                question_position=1,
                 question_type=FormQuestionType.MULTIPLE_CHOICE,
                 question_name='What do you think of capybaras?',
                 choices=[
@@ -329,8 +331,8 @@ class TestDbRepository(unittest.TestCase):
         sample_form_with_questions.form_id = cursor.lastrowid
 
         insert_question_query = '''
-            INSERT INTO question (form_id, question_name, question_type)
-            VALUES (?, ?, ?);
+            INSERT INTO question (form_id, question_name, question_type, question_position)
+            VALUES (?, ?, ?, ?);
         '''
 
         # TODO surely there's a better way to get a bunch of question IDs
@@ -340,6 +342,7 @@ class TestDbRepository(unittest.TestCase):
                 sample_form_with_questions.form_id,
                 question_to_validate_against.question_name,
                 question_to_validate_against.question_type.value,
+                question_to_validate_against.question_position
             )
 
             cursor.execute(insert_question_query, params)
