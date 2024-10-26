@@ -232,7 +232,7 @@ class TestDbRepository(unittest.TestCase):
         self.assertEqual(form.form_description, sample_form.form_description)
         self.assertEqual(form.form_title, sample_form.form_title)
         self.assertEqual(form.form_id, form_id)
-
+    
     def test_get_form_metadata_not_found(self):
         sample_form = Form(
             form_title='Capybara interest survey',
@@ -315,5 +315,54 @@ class TestDbRepository(unittest.TestCase):
         sample_form_with_questions = FormWithQuestions(
             form_title='Capybara interest survey',
             form_description='We\'d love to know your thoughts on capybaras! Please take a moment to answer the following questions.',
-            sample_form_with_questions=sample_questions
+            questions=sample_questions
         )
+
+        cursor = self.connection.cursor()
+        insert_form_query = '''
+            INSERT INTO form (form_title, form_description)
+            VALUES (?, ?);
+        '''
+        params = (sample_form_with_questions.form_title, sample_form_with_questions.form_description)
+
+        cursor.execute(insert_form_query, params)
+        sample_form_with_questions.form_id = cursor.lastrowid
+
+        insert_question_query = '''
+            INSERT INTO question (form_id, question_name, question_type)
+            VALUES (?, ?, ?);
+        '''
+
+        # TODO surely there's a better way to get a bunch of question IDs
+        # from an executemany statement, rather than looping execute statements
+        for question in sample_questions:
+            params = (
+                sample_form_with_questions.form_id,
+                question.question_name,
+                question.question_type.value,
+            )
+
+            cursor.execute(insert_question_query, params)
+            question.question_id = cursor.lastrowid
+            
+            for choice in question.choices:
+                choice.question_id = question.question_id
+
+        insert_choice_query = '''
+            INSERT INTO choice (choice_name, question_id, choice_position, has_free_response_field)
+            VALUES (?, ?, ?, ?);
+        '''
+        for question in sample_questions:
+            params = [
+                (
+                    choice.choice_name,
+                    choice.question_id,
+                    choice.choice_position,
+                    choice.has_free_response_field
+                )
+                for choice in question.choices
+            ]
+
+            cursor.executemany(insert_choice_query, params)
+
+        self.connection.commit()
