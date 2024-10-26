@@ -156,6 +156,7 @@ class Repository():
         '''
 
         cursor = self.connection.cursor()
+        cursor.row_factory = sqlite3.Row
         params = (form_id,)
         cursor.execute(get_questions_query, params)
         results = cursor.fetchall()
