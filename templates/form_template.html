@@ -148,11 +148,11 @@
 
                         <div class="form-selection-group">
                             {% for choice in question.choices %}
-                            <label name="q1">
-                                <input type="radio" name="q1" value="Not familiar at all">
+                            <label name="{{ question.question_id }}">
+                                <input type="radio" name="{{ question.question_id }}" value="{{ choice.choice_id }}">
                                 {{ choice.choice_name }}
                                 {% if choice.has_free_response_field %}
-                                    <input type="text" name="q2-other" placeholder="Please specify...">
+                                    <input type="text" name="{{ question.question_id }}-associated-text" placeholder="Please specify...">
                                 {% endif %}
                             </label>
                             {% endfor %}
