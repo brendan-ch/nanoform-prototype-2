@@ -128,6 +128,7 @@
         .bottom-button-group {
             display: flex;
             justify-content: space-between;
+            flex-direction: row;
         }
     </style>
 </head>
@@ -139,110 +140,28 @@
             <p>{{ form_description }}</p>
         </div>
 
-        <form action="/" method="POST" class="form-questions">
-            <div class="form-div">
-                <p>How familiar are you with capybaras?</p>
+        <form action="/form/{{ form_id }}/submit" method="POST" class="form-questions">
+            {% for question in questions %}
+                {% if question is defined %}
+                    <div class="form-div">
+                        <p>{{ question.question_name }}</p>
 
-                <div class="form-selection-group">
-                    <label name="q1">
-                        <input type="radio" name="q1" value="Very familiar">
-                        Very familiar
-                    </label>
-                    <label name="q1">
-                        <input type="radio" name="q1" value="Somewhat familiar">
-                        Somewhat familiar
-                    </label>
-                    <label name="q1">
-                        <input type="radio" name="q1" value="Not familiar at all">
-                        Not familiar at all
-                    </label>
-                </div>
-            </div>
-            <div class="form-div">
-                <p>What do you think of capybaras?</p>
+                        <div class="form-selection-group">
+                            {% for choice in question.choices %}
+                            <label name="q1">
+                                <input type="radio" name="q1" value="Not familiar at all">
+                                {{ choice.choice_name }}
+                                {% if choice.has_free_response_field %}
+                                    <input type="text" name="q2-other" placeholder="Please specify...">
+                                {% endif %}
+                            </label>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endif %}
 
-                <div class="form-selection-group">
-                    <label name="q2">
-                        <input type="radio" name="q2" value="Adorable">
-                        Adorable
-                    </label>
-                    <label name="q2">
-                        <input type="radio" name="q2" value="Calm and peaceful">
-                        Calm and peaceful
-                    </label>
-                    <label name="q2">
-                        <input type="radio" name="q2" value="Fascinating">
-                        Fascinating
-                    </label>
-                    <label name="q2" value="I don't have a strong opinion">
-                        <input type="radio" name="q2">
-                        I don't have a strong opinion
-                    </label>
-                    <label name="q2" value="Other">
-                        <input type="radio" name="q2">
-                        Other
-                        <input type="text" name="q2-other" placeholder="Please specify...">
-                    </label>
-                </div>
-
-
-            </div>
-            <div class="form-div">
-                <p>When did you first hear or learn about capybaras?</p>
-
-                <div class="form-selection-group">
-
-                    <label name="q3">
-                        <input type="radio" name="q3" value="TV/Documentaries">
-                        TV/Documentaries
-                    </label>
-                    <label name="q3">
-                        <input type="radio" name="q3" value="Social media">
-                        Social media
-                    </label>
-                    <label name="q3">
-                        <input type="radio" name="q3" value="Zoo visit">
-                        Zoo visit
-                    </label>
-                    <label name="q3">
-                        <input type="radio" name="q3" value="Books/Articles">
-                        Books/Articles 
-                    </label>
-                    <label name="q3">
-                        <input type="radio" name="q3" value="Friends/Family">
-                        Friends/Family
-                    </label>
-                    <label name="q3">
-                        <input type="radio" name="q3" value="Other">
-                        Other
-                        <input type="text" name="q3-other" placeholder="Please specify...">
-                    </label>
-                </div>
-            </div>
-
-            <div class="form-div">
-                <p>Have you ever seen a capybara in person?</p>
-
-                <div class="form-selection-group">
-                    <label name="q4">
-                        <input type="radio" name="q4" value="Friends/Family">
-                        Yes
-                    </label>
-                    <label name="q4">
-                        <input type="radio" name="q4" value="Other">
-                        No
-                    </label>
-
-                </div>
-            </div>
-
-
-            <div class="form-div">
-                <p>If you could spend a day with a capybara, what would you do?</p>
-                <textarea class="multiline-input" type="text" name="q4" placeholder="I would..."></textarea>
-            </div>
-
-            <div class="bottom-button-group">
+            {% endfor %}
+            <div class="bottom-button-group"></div>
                 <button type="submit" class="primary-button" id="submit-button">Submit</button>
                 <button>Reset</button>
             </div>
