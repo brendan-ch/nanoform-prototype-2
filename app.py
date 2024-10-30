@@ -1,7 +1,8 @@
-from flask import Flask, g, render_template, request
+from flask import Flask, g, render_template, request, abort
 from typing import Optional
 from db.repository import Repository
 from models.response import Response, ResponseChoice
+from exceptions.NotFoundException import NotFoundException
 
 app = Flask(__name__)
 
@@ -24,7 +25,11 @@ def index():
 def show_form(form_id: int):
     repo = get_repository()
     # TODO add improved error handling, check if the form exists
-    form = repo.get_form_with_questions(form_id)
+    try:
+        form = repo.get_form_with_questions(form_id)
+    except NotFoundException:
+        abort(404)
+
     return render_template('form_template.html', **form.__dict__)
 
 @app.route("/form/<int:form_id>/submit", methods=["POST"])

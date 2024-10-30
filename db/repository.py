@@ -6,6 +6,7 @@ from models.form_question_with_choices import FormQuestionWithChoices
 from models.question_choice import QuestionChoice
 from models.form_with_questions import FormWithQuestions
 from dataclasses import field, fields
+from exceptions.NotFoundException import NotFoundException
 import sqlite3
 
 DATABASE = './database.db'
@@ -107,8 +108,6 @@ class Repository():
             return ValueError(e)
 
     def get_form_metadata(self, form_id: int) -> Form:
-        # TODO implement improved error handling
-        # in case the form doesn't exist
         cursor = self.connection.cursor()
         cursor.row_factory = sqlite3.Row
         query = '''
@@ -120,6 +119,9 @@ class Repository():
         params = (form_id,)
         cursor.execute(query, params)
         result = cursor.fetchone()
+
+        if not result:
+            raise NotFoundException
 
         return Form(**result)
 
