@@ -36,12 +36,9 @@ def submit_form(form_id: int):
 
         # TODO optimize so multiple responses are added before committing
         for form_key in request.form:
-            if '-associated-text' in form_key:
-                pass
-            else:
+            if '-associated-text' not in form_key:
                 question_id = form_key
                 choice_id = request.form[question_id]
-                print(question_id, choice_id)
 
                 # Each response is associated with exactly one question
                 # So, when the question ID changes, create a new response
@@ -53,6 +50,10 @@ def submit_form(form_id: int):
                     choice_id=int(choice_id),
                     response_id=response.response_id
                 )
+
+                if f'{choice_id}-associated-text' in request.form:
+                    response_choice.associated_text = request.form[f'{choice_id}-associated-text']
+
                 repo.add_user_response_choice(response_choice)
 
         return "Your responses have been submitted"
