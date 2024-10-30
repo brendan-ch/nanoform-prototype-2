@@ -1,6 +1,7 @@
 from flask import Flask, g, render_template, request
 from typing import Optional
 from db.repository import Repository
+from models.response import Response, ResponseChoice
 
 app = Flask(__name__)
 
@@ -25,6 +26,35 @@ def show_form(form_id: int):
     # TODO add improved error handling, check if the form exists
     form = repo.get_form_with_questions(form_id)
     return render_template('form_template.html', **form.__dict__)
+
+@app.route("/form/<int:form_id>/submit", methods=["POST"])
+def submit_form(form_id: int):
+    repo = get_repository()
+
+    try:
+        response = None
+
+        # TODO optimize so multiple responses are added before committing
+        for question_id in request.form:
+            choice_id = request.form[question_id]
+            print(question_id, choice_id)
+
+            # Each response is associated with exactly one question
+            # So, when the question ID changes, create a new response
+            if not response or str(response.question_id) != question_id:
+                response = Response(int(question_id))
+                response.response_id = repo.add_user_response(response)
+
+            response_choice = ResponseChoice(
+                choice_id=int(choice_id),
+                response_id=response.response_id
+            )
+            repo.add_user_response_choice(response_choice)
+
+        return "Your responses have been submitted"
+    except ValueError as e:
+        print(e)
+        return "There was an issue with one or more form values"
     
 @app.teardown_appcontext
 def close_repository(exception):
