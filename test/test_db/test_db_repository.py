@@ -8,6 +8,7 @@ from models.form_question import FormQuestion, FormQuestionType
 from models.question_choice import QuestionChoice
 from models.form_with_questions import FormWithQuestions
 from models.form_question_with_choices import FormQuestionWithChoices
+from exceptions.NotFoundException import NotFoundException
 
 class TestDbRepository(unittest.TestCase):
     def setUp(self):
@@ -251,9 +252,8 @@ class TestDbRepository(unittest.TestCase):
         cursor.execute(query, params)
         self.connection.rollback()
 
-        # TODO introduce a more specific exception for this method
         form_id = 1
-        with self.assertRaises(Exception):
+        with self.assertRaises(NotFoundException):
             self.repository.get_form_metadata(form_id)
 
     def test_get_form_with_questions(self):
