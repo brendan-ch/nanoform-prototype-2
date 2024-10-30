@@ -152,7 +152,7 @@
                                 <input type="radio" name="{{ question.question_id }}" value="{{ choice.choice_id }}">
                                 {{ choice.choice_name }}
                                 {% if choice.has_free_response_field %}
-                                    <input type="text" name="{{ question.question_id }}-associated-text" placeholder="Please specify...">
+                                    <input type="text" name="{{ choice.choice_id }}-associated-text" placeholder="Please specify...">
                                 {% endif %}
                             </label>
                             {% endfor %}

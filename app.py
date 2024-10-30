@@ -35,21 +35,25 @@ def submit_form(form_id: int):
         response = None
 
         # TODO optimize so multiple responses are added before committing
-        for question_id in request.form:
-            choice_id = request.form[question_id]
-            print(question_id, choice_id)
+        for form_key in request.form:
+            if '-associated-text' in form_key:
+                pass
+            else:
+                question_id = form_key
+                choice_id = request.form[question_id]
+                print(question_id, choice_id)
 
-            # Each response is associated with exactly one question
-            # So, when the question ID changes, create a new response
-            if not response or str(response.question_id) != question_id:
-                response = Response(int(question_id))
-                response.response_id = repo.add_user_response(response)
+                # Each response is associated with exactly one question
+                # So, when the question ID changes, create a new response
+                if not response or str(response.question_id) != question_id:
+                    response = Response(int(question_id))
+                    response.response_id = repo.add_user_response(response)
 
-            response_choice = ResponseChoice(
-                choice_id=int(choice_id),
-                response_id=response.response_id
-            )
-            repo.add_user_response_choice(response_choice)
+                response_choice = ResponseChoice(
+                    choice_id=int(choice_id),
+                    response_id=response.response_id
+                )
+                repo.add_user_response_choice(response_choice)
 
         return "Your responses have been submitted"
     except ValueError as e:
